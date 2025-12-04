@@ -1,0 +1,6 @@
+FROM nginx:latest
+
+COPY default.conf /etc/nginx/conf.d/default.conf
+
+# важный момент — путь должен быть ОТ КОРНЯ context, а не ../
+COPY flutter_app/build/web /usr/share/nginx/html
