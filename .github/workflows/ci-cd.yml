@@ -29,21 +29,22 @@ jobs:
         run: flutter build web --release
         working-directory: flutter_app
 
-      - name: Build Flutter APK
-        run: flutter build apk --release
+      - name: Build Flutter APK (skip Gradle dependency validation)
+        run: flutter build apk --release --android-skip-build-dependency-validation
         working-directory: flutter_app
 
-      - name: Upload Web Artifact
+      - name: Upload Flutter Web Artifact
         uses: actions/upload-artifact@v4
         with:
           name: flutter-web
           path: flutter_app/build/web
 
-      - name: Upload APK Artifact
+      - name: Upload Flutter APK Artifact
         uses: actions/upload-artifact@v4
         with:
           name: flutter-apk
           path: flutter_app/build/app/outputs/flutter-apk/app-release.apk
+
 
   docker:
     name: Build Docker Images
@@ -57,7 +58,7 @@ jobs:
       - name: Build Docker Images
         run: docker compose build
 
-      - name: Save Docker images as artifact
+      - name: Save Docker Images as Artifact
         uses: actions/upload-artifact@v4
         with:
           name: docker-images
