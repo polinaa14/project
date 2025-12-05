@@ -9,42 +9,45 @@ on:
 jobs:
 
   flutter:
-    name: Build Flutter App
+    name: Build Flutter App (Web + APK)
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install Flutter 3.22.3 (stable)
+      - name: Install Flutter (stable 3.24.3)
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.22.3'
-          channel: 'stable'
+          flutter-version: "3.24.3"
 
       - name: Flutter pub get
         run: flutter pub get
         working-directory: flutter_app
 
+      # ---- WEB ----
       - name: Build Flutter Web
         run: flutter build web --release
         working-directory: flutter_app
 
-      - name: Build Flutter APK
-        run: flutter build apk --release --android-skip-build-dependency-validation
+      # ---- ANDROID APK ----
+      - name: Build Flutter APK (Release)
+        run: flutter build apk --release --no-android-gradle-daemon --android-skip-build-dependency-validation
         working-directory: flutter_app
 
-      - name: Upload Flutter Web Artifact
+      # ---- UPLOAD ARTIFACTS ----
+      - name: Upload Web Artifact
         uses: actions/upload-artifact@v4
         with:
           name: flutter-web
           path: flutter_app/build/web
 
-      - name: Upload Flutter APK Artifact
+      - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
           name: flutter-apk
           path: flutter_app/build/app/outputs/flutter-apk/app-release.apk
+
 
 
   docker:
@@ -59,7 +62,7 @@ jobs:
       - name: Build Docker Images
         run: docker compose build
 
-      - name: Save Docker Images as Artifact
+      - name: Save Docker images as artifact
         uses: actions/upload-artifact@v4
         with:
           name: docker-images
